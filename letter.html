@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Love Letter For You ❤️ Valentine's Day</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+
+  <!-- Page Transition Overlay -->
+  <div class="page-transition active"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled">
+    <a href="dashboard.html" class="nav-logo">Our Love <span class="heart-icon"><i class="ti ti-heart-filled"></i></span></a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Home</a></li>
+      <li><a href="video.html">Our Video</a></li>
+      <li><a href="photos.html">Memories</a></li>
+      <li><a href="particles.html">Stars</a></li>
+      <li><a href="letter.html" class="active">Love Letter</a></li>
+      <li><a href="puzzle.html">Pixel Game</a></li>
+      <li><a href="particle-image.html">Particle Art</a></li>
+    </ul>
+  </nav>
+
+  <!-- Envelope + Letter Scene -->
+  <section class="envelope-scene">
+
+    <!-- Hint text -->
+    <p class="envelope-hint" id="envelopeHint"><i class="ti ti-heart-filled"></i> Hover the envelope to open <i class="ti ti-heart-filled"></i></p>
+
+    <!-- Envelope -->
+    <div class="envelope_form_wrap" id="envelopeWrap">
+      <div id="envelope_form">
+        <div class="env_wrap">
+          <!-- Letter content inside envelope -->
+          <div class="env_form_wrap">
+            <div class="env_letter_preview">
+              <h3 class="env_preview_title">My Dearest Love,</h3>
+              <p class="env_preview_text">
+                From the very first moment I saw you, something inside me knew
+                that my life was about to change forever...
+              </p>
+              <button class="env_read_btn" id="readLetterBtn">Read Full Letter <i class="ti ti-heart-filled"></i></button>
+            </div>
+          </div>
+          <!-- Envelope flap (triangle top) -->
+          <div class="env_top"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Letter (hidden initially, shown on button click) -->
+    <div class="letter-section letter-hidden" id="letterFull">
+      <div class="letter-card">
+
+        <p class="letter-date">February 14, 2026</p>
+
+        <h2 class="letter-greeting">My Dearest Love,</h2>
+
+        <div class="letter-body">
+          <p>
+            It still feels a little unbelievable that everything started from a simple
+            message on a screen. Out of all the people in this world, we found each
+            other online. At first, it was just casual talking, small conversations,
+            late-night chats, random jokes. I didn't expect anything special. But slowly,
+            you became the person I looked forward to every single day.
+          </p>
+
+          <p>
+            I remember how excited and nervous I felt before we met in person for the
+            first time. And then the moment I saw you, it felt even better. Your smile
+            was real, your laugh was warmer, and the connection we built through messages
+            suddenly became something I could see and feel.
+          </p>
+
+          <p>
+            That first meeting wasn't just a meeting at a cafe. It was the moment our
+            story truly began. From typing "good morning" to hearing your voice.
+          </p>
+
+          <p>
+            And now, here we are celebrating 1 year and 8 months together. A whole year
+            and a half of memories, growth, laughter, understanding, and love. Twenty
+            months may sound like just a number, but to me, it represents every moment
+            we chose each other, every challenge we faced together, and every day we
+            continued building something real.
+          </p>
+        </div>
+
+        <p class="letter-closing">Forever & Always Yours,</p>
+        <p class="letter-signature">Your Love <i class="ti ti-heart-filled"></i></p>
+
+        <!-- Wax Seal -->
+        <div class="wax-seal"><i class="ti ti-heart-filled"></i></div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

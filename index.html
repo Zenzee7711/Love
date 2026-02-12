@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine's Date? ❤️</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Great+Vibes&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: linear-gradient(135deg, #1a0a18 0%, #2d1028 30%, #4a1942 60%, #1a0a18 100%);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      font-family: 'Lora', Georgia, serif;
+    }
+
+    /* Floating hearts background */
+    .floating-hearts {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .float-heart {
+      position: absolute;
+      bottom: -60px;
+      font-size: 20px;
+      opacity: 0.15;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0; }
+      10% { opacity: 0.15; }
+      90% { opacity: 0.15; }
+      100% { transform: translateY(-110vh) rotate(360deg) scale(0.5); opacity: 0; }
+    }
+
+    /* Ambient glow */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 {
+      width: 400px; height: 400px;
+      background: rgba(178,34,51,0.12);
+      top: -100px; left: -100px;
+      animation: pulse1 8s ease-in-out infinite;
+    }
+    .glow-2 {
+      width: 350px; height: 350px;
+      background: rgba(244,194,194,0.08);
+      bottom: -80px; right: -80px;
+      animation: pulse2 10s ease-in-out infinite;
+    }
+    .glow-3 {
+      width: 300px; height: 300px;
+      background: rgba(201,168,76,0.06);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse3 12s ease-in-out infinite;
+    }
+    @keyframes pulse1 { 0%,100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+    @keyframes pulse2 { 0%,100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.15); } }
+    @keyframes pulse3 { 0%,100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.7; transform: translate(-50%,-50%) scale(1.3); } }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      padding: 45px 50px;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow:
+        0 30px 60px rgba(0,0,0,0.3),
+        0 0 80px rgba(178,34,51,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      max-width: 400px;
+      width: 90%;
+      border: 1px solid rgba(244,194,194,0.3);
+      animation: cardEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes cardEntry {
+      0% { opacity: 0; transform: scale(0.8) translateY(30px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(244,194,194,0.4), rgba(201,168,76,0.3), rgba(178,34,51,0.2));
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      color: #8b1a2b;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 16px;
+      color: #5a2d3e;
+      line-height: 1.7;
+      margin-top: 5px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 30px;
+      position: relative;
+      min-height: 50px;
+    }
+
+    button {
+      padding: 13px 26px;
+      font-size: 15px;
+      font-family: 'Lora', Georgia, serif;
+      font-weight: 600;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      letter-spacing: 0.02em;
+    }
+
+    #yesBtn {
+      background: linear-gradient(135deg, #b22233, #d4374a);
+      color: white;
+      box-shadow: 0 6px 25px rgba(178,34,51,0.35);
+    }
+    #yesBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 35px rgba(178,34,51,0.5);
+    }
+
+    #noBtn {
+      background: rgba(244,194,194,0.25);
+      color: #8b1a2b;
+      border: 1.5px solid rgba(178,34,51,0.15);
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
+    }
+    #noBtn:hover {
+      background: rgba(244,194,194,0.4);
+    }
+
+    /* Decorative line */
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      margin: 12px auto;
+      border-radius: 2px;
+    }
+
+    /* Final state card glow */
+    .card.final {
+      background: linear-gradient(135deg, rgba(255,245,248,0.98), rgba(255,240,243,0.98));
+      animation: finalGlow 2s ease-in-out infinite alternate;
+    }
+    @keyframes finalGlow {
+      0% { box-shadow: 0 30px 60px rgba(0,0,0,0.3), 0 0 60px rgba(178,34,51,0.1); }
+      100% { box-shadow: 0 30px 60px rgba(0,0,0,0.3), 0 0 100px rgba(178,34,51,0.2); }
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 35px 30px; }
+      h1 { font-size: 1.5rem; }
+      p { font-size: 15px; }
+      button { padding: 11px 20px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient glows -->
+  <div class="glow-orb glow-1"></div>
+  <div class="glow-orb glow-2"></div>
+  <div class="glow-orb glow-3"></div>
+
+  <!-- Floating hearts -->
+  <div class="floating-hearts" id="floatingHearts"></div>
+
+  <div class="card">
+    <h1 id="title">My Love…</h1>
+    <div class="divider"></div>
+    <p id="text">
+      I have something to ask you.<br><br>
+      Will you be my Valentine?
+    </p>
+    <div class="buttons">
+      <button id="yesBtn">Yes, always <i class="ti ti-heart-filled"></i></button>
+      <button id="noBtn">Not yet <i class="ti ti-mood-smile"></i></button>
+    </div>
+  </div>
+
+  <script>
+    const title = document.getElementById("title");
+    const text = document.getElementById("text");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+
+    let stage = 0;
+
+    const flirtStages = [
+      {
+        title: '<i class="ti ti-heart-filled"></i> You\'re thinking about it…',
+        text: "I already know the answer in your heart.<br><br>Take your time, my love.",
+        yes: 'You know me well <i class="ti ti-heart-filled"></i>'
+      },
+      {
+        title: '<i class="ti ti-heart-filled"></i> Getting closer…',
+        text: 'Just imagine us together.<br>Your hand in mine, the world fading away.',
+        yes: 'That sounds beautiful <i class="ti ti-heart-filled"></i>'
+      },
+      {
+        title: '<i class="ti ti-heart-filled"></i> I meant every word…',
+        text: "You are the most beautiful chapter of my life so far.",
+        yes: 'Yes, I\'m yours <i class="ti ti-heart-filled"></i>'
+      },
+      {
+        title: '<i class="ti ti-heart-filled"></i> My heart is so full',
+        text: 'Every day with you is a gift.<br><br>I promise to make this Valentine\'s Day unforgettable.',
+        yes: 'I love you <i class="ti ti-heart-filled"></i>'
+      }
+    ];
+
+    yesBtn.addEventListener("click", () => {
+      if (stage < flirtStages.length) {
+        title.innerHTML = flirtStages[stage].title;
+        text.innerHTML = flirtStages[stage].text;
+        yesBtn.innerHTML = flirtStages[stage].yes;
+        stage++;
+      } else {
+        const card = document.querySelector(".card");
+        card.classList.add('final');
+        card.innerHTML = `
+          <h1><i class="ti ti-heart-filled"></i> It's a date, my love</h1>
+          <div class="divider"></div>
+          <p>
+            I'll make everything perfect for us.<br><br>
+            Because you deserve the world <i class="ti ti-heart-filled"></i>
+          </p>
+        `;
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 3000);
+      }
+    });
+
+    noBtn.addEventListener("mouseover", runAway);
+    noBtn.addEventListener("click", runAway);
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); runAway(); }, { passive: false });
+
+    function runAway() {
+      const cardRect = document.querySelector('.card').getBoundingClientRect();
+      const maxX = cardRect.width / 2 - 40;
+      const maxY = 120;
+      const x = (Math.random() - 0.5) * 2 * maxX;
+      const y = (Math.random() - 0.5) * 2 * maxY;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // Floating hearts
+    function createFloatingHearts() {
+      const container = document.getElementById('floatingHearts');
+      const hearts = ['♥', '❤', '💕', '💗'];
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'float-heart';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.fontSize = (12 + Math.random() * 18) + 'px';
+        heart.style.animationDuration = (8 + Math.random() * 12) + 's';
+        heart.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(heart);
+      }
+    }
+    createFloatingHearts();
+  </script>
+
+</body>
+</html>

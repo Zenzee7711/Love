@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Particle Portrait ❤️ Valentine's Day</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+  <style>
+    /* ---------- Particle Image Page ---------- */
+    .particle-image-page {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #1a0a18 0%, #0d0510 40%, #050208 100%);
+    }
+
+    #particleImageCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    /* Nebula glow layers */
+    .nebula-layer {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0;
+      z-index: 1;
+      animation: nebulaFadeIn 3s ease-out forwards;
+    }
+    .nebula-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(178,34,51,0.15), transparent 70%);
+      top: 10%; left: 15%;
+      animation-delay: 0.5s;
+    }
+    .nebula-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201,168,76,0.1), transparent 70%);
+      top: 50%; right: 10%;
+      animation-delay: 1s;
+    }
+    .nebula-3 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(244,194,194,0.08), transparent 70%);
+      bottom: 5%; left: 40%;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes nebulaFadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Status text */
+    .particle-status {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      text-align: center;
+      pointer-events: none;
+    }
+    .particle-status-text {
+      font-family: var(--font-handwritten);
+      font-size: 1.8rem;
+      color: rgba(244, 194, 194, 0.7);
+      opacity: 0;
+      transition: opacity 1.2s ease, transform 1.2s ease;
+      transform: translateY(10px);
+      text-shadow: 0 0 20px rgba(178,34,51,0.4);
+    }
+    .particle-status-text.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .particle-status-text.fade-out {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    /* Countdown ring */
+    .countdown-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .countdown-ring.visible { opacity: 1; }
+    .countdown-ring.fade-out { opacity: 0; }
+
+    .countdown-ring svg {
+      width: 80px;
+      height: 80px;
+      transform: rotate(-90deg);
+    }
+    .countdown-ring circle {
+      fill: none;
+      stroke-width: 2;
+    }
+    .countdown-ring .ring-bg {
+      stroke: rgba(244,194,194,0.1);
+    }
+    .countdown-ring .ring-progress {
+      stroke: var(--blush-pink);
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+      filter: drop-shadow(0 0 6px rgba(244,194,194,0.5));
+    }
+    .countdown-number {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--blush-pink);
+      text-shadow: 0 0 15px rgba(244,194,194,0.5);
+    }
+
+    /* Replay button */
+    .particle-replay-btn {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      z-index: 10;
+      background: rgba(178,34,51,0.2);
+      border: 1px solid rgba(244,194,194,0.3);
+      color: var(--blush-pink);
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+    }
+    .particle-replay-btn.visible { opacity: 1; }
+    .particle-replay-btn:hover {
+      background: rgba(178,34,51,0.4);
+      border-color: rgba(244,194,194,0.6);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(178,34,51,0.3);
+    }
+    .particle-replay-btn i { margin-right: 6px; }
+
+    /* Navbar override for dark page */
+    .particle-image-page ~ .footer {
+      background: #0d0510;
+      border-top-color: rgba(244,194,194,0.08);
+    }
+    .particle-image-page ~ .footer p {
+      color: rgba(255,255,255,0.35);
+    }
+
+    @media (max-width: 768px) {
+      .particle-status-text { font-size: 1.4rem; }
+      .nebula-1, .nebula-2, .nebula-3 { transform: scale(0.6); }
+      .particle-replay-btn { bottom: 20px; right: 20px; font-size: 0.8rem; padding: 8px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page Transition Overlay -->
+  <div class="page-transition active"></div>
+
+  <!-- Navigation (dark theme inline overrides like particles.html) -->
+  <nav class="navbar">
+    <a href="dashboard.html" class="nav-logo" style="color: #f4c2c2;">Our Love <span class="heart-icon"><i class="ti ti-heart-filled"></i></span></a>
+    <button class="hamburger" aria-label="Menu">
+      <span style="background: #f4c2c2;"></span>
+      <span style="background: #f4c2c2;"></span>
+      <span style="background: #f4c2c2;"></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html" style="color: rgba(255,255,255,0.8);">Home</a></li>
+      <li><a href="video.html" style="color: rgba(255,255,255,0.8);">Our Video</a></li>
+      <li><a href="photos.html" style="color: rgba(255,255,255,0.8);">Memories</a></li>
+      <li><a href="particles.html" style="color: rgba(255,255,255,0.8);">Stars</a></li>
+      <li><a href="letter.html" style="color: rgba(255,255,255,0.8);">Love Letter</a></li>
+      <li><a href="puzzle.html" style="color: rgba(255,255,255,0.8);">Pixel Game</a></li>
+      <li><a href="particle-image.html" class="active" style="color: #fff;">Particle Art</a></li>
+    </ul>
+  </nav>
+
+  <!-- Particle Image Scene -->
+  <section class="particle-image-page">
+
+    <!-- Nebula background glows -->
+    <div class="nebula-layer nebula-1"></div>
+    <div class="nebula-layer nebula-2"></div>
+    <div class="nebula-layer nebula-3"></div>
+
+    <!-- Main canvas -->
+    <canvas id="particleImageCanvas"></canvas>
+
+    <!-- Countdown ring -->
+    <div class="countdown-ring" id="countdownRing">
+      <svg viewBox="0 0 80 80">
+        <circle class="ring-bg" cx="40" cy="40" r="35"></circle>
+        <circle class="ring-progress" id="ringProgress" cx="40" cy="40" r="35"></circle>
+      </svg>
+      <span class="countdown-number" id="countdownNumber">5</span>
+    </div>
+
+    <!-- Status text -->
+    <div class="particle-status">
+      <p class="particle-status-text" id="statusText"></p>
+    </div>
+
+    <!-- Replay button -->
+    <button class="particle-replay-btn" id="replayBtn">
+      <i class="ti ti-refresh"></i> Replay
+    </button>
+
+  </section>
+
+  <script src="script.js"></script>
+
+  <!-- Particle Image Engine -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* ========== Configuration ========== */
+    const IMG_SRC = 'assets/images/p.jpg';
+    const PARTICLE_GAP = 4;          // Sample every N pixels (lower = more detail, more particles)
+    const MAX_PARTICLES = 18000;      // Safety cap
+    const UNIVERSE_DURATION = 5000;  // 5 seconds in universe state
+    const MORPH_DURATION = 3500;     // Transition duration in ms
+    const PARTICLE_BASE_SIZE = 2.2;
+
+    /* ========== DOM ========== */
+    const canvas = document.getElementById('particleImageCanvas');
+    const ctx = canvas.getContext('2d');
+    const statusText = document.getElementById('statusText');
+    const countdownRing = document.getElementById('countdownRing');
+    const ringProgress = document.getElementById('ringProgress');
+    const countdownNumber = document.getElementById('countdownNumber');
+    const replayBtn = document.getElementById('replayBtn');
+
+    let W, H;
+    let particles = [];
+    let animationId = null;
+    let state = 'loading'; // loading | universe | morphing | formed | dispersing
+    let stateStartTime = 0;
+    let mouse = { x: -9999, y: -9999, radius: 100 };
+
+    /* ========== Resize ========== */
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', () => {
+      resize();
+      if (state === 'formed') positionParticlesForImage();
+    });
+    resize();
+
+    /* ========== Mouse interaction ========== */
+    canvas.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    canvas.addEventListener('mouseleave', () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+    canvas.addEventListener('touchmove', (e) => {
+      mouse.x = e.touches[0].clientX;
+      mouse.y = e.touches[0].clientY;
+    }, { passive: true });
+    canvas.addEventListener('touchend', () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+
+    /* ========== Particle Class ========== */
+    class Particle {
+      constructor(targetX, targetY, color) {
+        // Target position (image position)
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.color = color;
+
+        // Universe state — random position
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.size = Math.random() * 1.5 + 0.3;
+
+        // Universe drift velocity
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+
+        // Twinkle
+        this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+        this.twinkleOffset = Math.random() * Math.PI * 2;
+        this.baseAlpha = Math.random() * 0.5 + 0.3;
+        this.alpha = this.baseAlpha;
+
+        // Morph
+        this.morphStartX = this.x;
+        this.morphStartY = this.y;
+        this.morphStartSize = this.size;
+        this.morphDelay = 0; // staggered delay
+        this.targetSize = PARTICLE_BASE_SIZE;
+
+        // Formed state
+        this.originX = this.targetX;
+        this.originY = this.targetY;
+
+        // For color transition
+        this.universeColor = this.getUniverseColor();
+        this.imageColor = color;
+      }
+
+      getUniverseColor() {
+        // Starfield colors: white, pale blue, pale yellow, pale pink
+        const colors = [
+          'rgba(255,255,255,',
+          'rgba(200,220,255,',
+          'rgba(255,240,200,',
+          'rgba(255,200,210,',
+          'rgba(180,200,255,',
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      drawUniverse(time) {
+        // Twinkle effect
+        this.alpha = this.baseAlpha + Math.sin(time * this.twinkleSpeed + this.twinkleOffset) * 0.3;
+        this.alpha = Math.max(0.05, Math.min(1, this.alpha));
+
+        // Gentle drift
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Wrap around edges
+        if (this.x < -10) this.x = W + 10;
+        if (this.x > W + 10) this.x = -10;
+        if (this.y < -10) this.y = H + 10;
+        if (this.y > H + 10) this.y = -10;
+
+        // Draw with glow
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.universeColor + this.alpha + ')';
+        ctx.fill();
+
+        // Occasional bright glow
+        if (this.alpha > 0.7) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = this.universeColor + (this.alpha * 0.15) + ')';
+          ctx.fill();
+        }
+      }
+
+      drawMorph(progress) {
+        // Staggered progress per particle
+        let p = (progress - this.morphDelay) / (1 - this.morphDelay);
+        p = Math.max(0, Math.min(1, p));
+
+        // Easing: cubic ease-in-out
+        p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+
+        // Interpolate position
+        this.x = this.morphStartX + (this.targetX - this.morphStartX) * p;
+        this.y = this.morphStartY + (this.targetY - this.morphStartY) * p;
+
+        // Interpolate size
+        this.size = this.morphStartSize + (this.targetSize - this.morphStartSize) * p;
+
+        // Color transition from universe to image color
+        this.alpha = 0.4 + p * 0.6;
+
+        // Blend colors
+        if (p < 0.5) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.universeColor + this.alpha + ')';
+          ctx.fill();
+        }
+        if (p > 0.3) {
+          const imgAlpha = Math.min(1, (p - 0.3) / 0.7);
+          const [r, g, b] = this.imageColor;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${imgAlpha * this.alpha})`;
+          ctx.fill();
+        }
+
+        // Trail effect during morph
+        if (p > 0.05 && p < 0.85) {
+          const trailX = this.morphStartX + (this.targetX - this.morphStartX) * (p * 0.7);
+          const trailY = this.morphStartY + (this.targetY - this.morphStartY) * (p * 0.7);
+          ctx.beginPath();
+          ctx.arc(trailX, trailY, this.size * 0.4, 0, Math.PI * 2);
+          ctx.fillStyle = this.universeColor + (0.1 * (1 - p)) + ')';
+          ctx.fill();
+        }
+      }
+
+      drawFormed() {
+        const [r, g, b] = this.imageColor;
+
+        // Mouse repulsion
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius;
+          const angle = Math.atan2(dy, dx);
+          this.x += Math.cos(angle) * force * 8;
+          this.y += Math.sin(angle) * force * 8;
+        } else {
+          // Spring back to origin
+          this.x += (this.originX - this.x) * 0.08;
+          this.y += (this.originY - this.y) * 0.08;
+        }
+
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},0.95)`;
+        ctx.fill();
+      }
+
+      drawDisperse(progress) {
+        let p = Math.min(1, progress);
+        p = p * p; // ease-in
+
+        const angle = Math.random() * Math.PI * 2;
+        const drift = p * 200;
+
+        this.x += (Math.cos(angle) * drift * 0.02);
+        this.y += (Math.sin(angle) * drift * 0.02);
+        this.alpha = Math.max(0, 1 - p);
+
+        const [r, g, b] = this.imageColor;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * (1 + p * 0.5), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    /* ========== Load Image & Sample Pixels ========== */
+    function loadImageAndSample() {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = IMG_SRC;
+
+        img.onload = () => {
+          // Determine display size (fit image in viewport with padding)
+          const padding = 100;
+          const maxW = W - padding * 2;
+          const maxH = H - padding * 2;
+
+          let drawW = img.width;
+          let drawH = img.height;
+          const ratio = Math.min(maxW / drawW, maxH / drawH);
+          drawW = Math.round(drawW * ratio);
+          drawH = Math.round(drawH * ratio);
+
+          // Center offset
+          const offsetX = Math.round((W - drawW) / 2);
+          const offsetY = Math.round((H - drawH) / 2);
+
+          // Draw image to offscreen canvas to sample pixels
+          const offCanvas = document.createElement('canvas');
+          offCanvas.width = drawW;
+          offCanvas.height = drawH;
+          const offCtx = offCanvas.getContext('2d');
+          offCtx.drawImage(img, 0, 0, drawW, drawH);
+
+          const imageData = offCtx.getImageData(0, 0, drawW, drawH);
+          const data = imageData.data;
+
+          const sampledParticles = [];
+
+          // Adaptive gap based on image size to stay within MAX_PARTICLES
+          let gap = PARTICLE_GAP;
+          const estimatedCount = Math.floor(drawW / gap) * Math.floor(drawH / gap);
+          if (estimatedCount > MAX_PARTICLES) {
+            gap = Math.ceil(Math.sqrt((drawW * drawH) / MAX_PARTICLES));
+          }
+
+          for (let y = 0; y < drawH; y += gap) {
+            for (let x = 0; x < drawW; x += gap) {
+              const i = (y * drawW + x) * 4;
+              const r = data[i];
+              const g = data[i + 1];
+              const b = data[i + 2];
+              const a = data[i + 3];
+
+              // Skip transparent / very dark pixels
+              if (a < 30) continue;
+              const brightness = (r + g + b) / 3;
+              if (brightness < 10 && a < 100) continue;
+
+              sampledParticles.push({
+                x: x + offsetX,
+                y: y + offsetY,
+                color: [r, g, b]
+              });
+            }
+          }
+
+          resolve(sampledParticles);
+        };
+
+        img.onerror = () => {
+          // Fallback: create a heart shape with random colors
+          const heartParticles = [];
+          for (let i = 0; i < 5000; i++) {
+            const t = Math.random() * Math.PI * 2;
+            const scale = 8;
+            const hx = 16 * Math.pow(Math.sin(t), 3) * scale;
+            const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t)) * scale;
+            heartParticles.push({
+              x: W/2 + hx,
+              y: H/2 + hy,
+              color: [178 + Math.random()*50, 34 + Math.random()*30, 51 + Math.random()*30]
+            });
+          }
+          resolve(heartParticles);
+        };
+      });
+    }
+
+    /* ========== Position particles for current viewport ========== */
+    function positionParticlesForImage() {
+      // Re-sample would be complex; just keep positions
+    }
+
+    /* ========== Status Text Helpers ========== */
+    function showStatus(text) {
+      statusText.textContent = text;
+      statusText.classList.remove('fade-out');
+      statusText.classList.add('visible');
+    }
+    function hideStatus() {
+      statusText.classList.add('fade-out');
+      statusText.classList.remove('visible');
+    }
+
+    /* ========== Countdown ========== */
+    function startCountdown() {
+      countdownRing.classList.add('visible');
+      countdownRing.classList.remove('fade-out');
+      let seconds = 5;
+      countdownNumber.textContent = seconds;
+
+      const circumference = 2 * Math.PI * 35; // r=35
+      ringProgress.style.strokeDasharray = circumference;
+      ringProgress.style.strokeDashoffset = circumference;
+
+      const interval = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+          clearInterval(interval);
+          countdownNumber.textContent = '';
+          countdownRing.classList.add('fade-out');
+          countdownRing.classList.remove('visible');
+          return;
+        }
+        countdownNumber.textContent = seconds;
+        const progress = (5 - seconds) / 5;
+        ringProgress.style.strokeDashoffset = circumference * (1 - progress);
+      }, 1000);
+
+      // Smooth ring animation
+      setTimeout(() => {
+        ringProgress.style.transition = `stroke-dashoffset 5s linear`;
+        ringProgress.style.strokeDashoffset = '0';
+      }, 50);
+    }
+
+    /* ========== Background Stars (additional ambient particles) ========== */
+    const bgStars = [];
+    function createBgStars() {
+      bgStars.length = 0;
+      for (let i = 0; i < 200; i++) {
+        bgStars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: Math.random() * 1.2 + 0.2,
+          alpha: Math.random() * 0.4 + 0.1,
+          twinkle: Math.random() * 0.01 + 0.003,
+          offset: Math.random() * Math.PI * 2
+        });
+      }
+    }
+    createBgStars();
+
+    function drawBgStars(time) {
+      for (const star of bgStars) {
+        const a = star.alpha + Math.sin(time * star.twinkle + star.offset) * 0.2;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${Math.max(0.02, a)})`;
+        ctx.fill();
+      }
+    }
+
+    /* ========== Shooting Stars ========== */
+    const shootingStars = [];
+    function spawnShootingStar() {
+      if (state !== 'universe') return;
+      shootingStars.push({
+        x: Math.random() * W,
+        y: Math.random() * H * 0.4,
+        vx: 4 + Math.random() * 6,
+        vy: 2 + Math.random() * 3,
+        life: 1,
+        decay: 0.015 + Math.random() * 0.01,
+        length: 30 + Math.random() * 50
+      });
+    }
+
+    function drawShootingStars() {
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const s = shootingStars[i];
+        s.x += s.vx;
+        s.y += s.vy;
+        s.life -= s.decay;
+
+        if (s.life <= 0) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
+
+        const grad = ctx.createLinearGradient(
+          s.x, s.y,
+          s.x - s.vx * (s.length / s.vx), s.y - s.vy * (s.length / s.vx)
+        );
+        grad.addColorStop(0, `rgba(255,255,255,${s.life * 0.8})`);
+        grad.addColorStop(1, `rgba(255,255,255,0)`);
+
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.vx * (s.length / 6), s.y - s.vy * (s.length / 6));
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Head glow
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${s.life})`;
+        ctx.fill();
+      }
+    }
+
+    /* ========== Main Animation Loop ========== */
+    function animate(time) {
+      animationId = requestAnimationFrame(animate);
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Always draw background stars
+      drawBgStars(time);
+
+      switch (state) {
+        case 'universe':
+          // Draw main particles as universe/starfield
+          for (const p of particles) {
+            p.drawUniverse(time);
+          }
+          drawShootingStars();
+          break;
+
+        case 'morphing': {
+          const elapsed = Date.now() - stateStartTime;
+          const progress = Math.min(1, elapsed / MORPH_DURATION);
+
+          for (const p of particles) {
+            p.drawMorph(progress);
+          }
+
+          if (progress >= 1) {
+            state = 'formed';
+            stateStartTime = Date.now();
+            showStatus('Move your mouse across the image');
+            setTimeout(() => hideStatus(), 4000);
+            replayBtn.classList.add('visible');
+          }
+          break;
+        }
+
+        case 'formed':
+          for (const p of particles) {
+            p.drawFormed();
+          }
+          break;
+
+        case 'dispersing': {
+          const elapsed = Date.now() - stateStartTime;
+          const progress = Math.min(1, elapsed / 2000);
+
+          for (const p of particles) {
+            p.drawDisperse(progress);
+          }
+
+          if (progress >= 1) {
+            // Re-init universe
+            startSequence();
+          }
+          break;
+        }
+      }
+    }
+
+    /* ========== Start Sequence ========== */
+    async function startSequence() {
+      if (animationId) cancelAnimationFrame(animationId);
+      replayBtn.classList.remove('visible');
+      shootingStars.length = 0;
+
+      showStatus('Every star in the universe led me to you...');
+
+      // Load image and sample
+      const sampled = await loadImageAndSample();
+
+      // Create particles
+      particles = sampled.map(s => new Particle(s.x, s.y, s.color));
+
+      // Assign morph delays (staggered by distance from center for spiral effect)
+      const cx = W / 2, cy = H / 2;
+      let maxDist = 0;
+      particles.forEach(p => {
+        const dx = p.targetX - cx;
+        const dy = p.targetY - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        p._dist = dist;
+        if (dist > maxDist) maxDist = dist;
+      });
+      particles.forEach(p => {
+        // Particles closer to center form first
+        p.morphDelay = (p._dist / maxDist) * 0.4;
+      });
+
+      // Start universe state
+      state = 'universe';
+      stateStartTime = Date.now();
+
+      // Start animation
+      animationId = requestAnimationFrame(animate);
+
+      // Spawn shooting stars periodically
+      const shootingInterval = setInterval(() => {
+        if (state !== 'universe') {
+          clearInterval(shootingInterval);
+          return;
+        }
+        spawnShootingStar();
+      }, 800);
+
+      // Show countdown
+      startCountdown();
+
+      // After 3s, update status text
+      setTimeout(() => {
+        if (state === 'universe') {
+          showStatus('Watch closely...');
+        }
+      }, 3000);
+
+      // After UNIVERSE_DURATION, start morphing
+      setTimeout(() => {
+        if (state !== 'universe') return;
+        hideStatus();
+        setTimeout(() => {
+          state = 'morphing';
+          stateStartTime = Date.now();
+          showStatus('Every particle finds its place... just like us');
+
+          // Snapshot morph start positions
+          particles.forEach(p => {
+            p.morphStartX = p.x;
+            p.morphStartY = p.y;
+            p.morphStartSize = p.size;
+          });
+
+          setTimeout(() => hideStatus(), 3000);
+        }, 600);
+      }, UNIVERSE_DURATION);
+    }
+
+    /* ========== Replay ========== */
+    replayBtn.addEventListener('click', () => {
+      state = 'dispersing';
+      stateStartTime = Date.now();
+      replayBtn.classList.remove('visible');
+      hideStatus();
+    });
+
+    /* ========== Init ========== */
+    startSequence();
+
+  })();
+  </script>
+
+</body>
+</html>

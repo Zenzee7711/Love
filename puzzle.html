@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Pixel Puzzle ❤️ Valentine's Day</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+
+  <!-- Page Transition Overlay -->
+  <div class="page-transition active"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled">
+    <a href="dashboard.html" class="nav-logo">Our Love <span class="heart-icon"><i class="ti ti-heart-filled"></i></span></a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Home</a></li>
+      <li><a href="video.html">Our Video</a></li>
+      <li><a href="photos.html">Memories</a></li>
+      <li><a href="particles.html">Stars</a></li>
+      <li><a href="letter.html">Love Letter</a></li>
+      <li><a href="puzzle.html" class="active">Pixel Game</a></li>
+      <li><a href="particle-image.html">Particle Art</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>Piece Together Our Love</h1>
+    <p>Solve the puzzle to reveal a special picture of us</p>
+  </header>
+
+  <!-- Puzzle Section -->
+  <section class="puzzle-section">
+
+    <!-- Difficulty selector -->
+    <div class="puzzle-controls">
+      <label class="puzzle-label">Difficulty:</label>
+      <button class="puzzle-diff-btn active" data-size="3">3×3</button>
+      <button class="puzzle-diff-btn" data-size="4">4×4</button>
+      <button class="puzzle-diff-btn" data-size="5">5×5</button>
+    </div>
+
+    <!-- Puzzle board -->
+    <div class="puzzle-board" id="puzzleBoard"></div>
+
+    <!-- Info bar -->
+    <div class="puzzle-info">
+      <p class="puzzle-moves">Moves: <span id="moveCount">0</span></p>
+      <button class="puzzle-shuffle-btn" id="shuffleBtn"><i class="ti ti-heart-filled"></i> Shuffle</button>
+      <button class="puzzle-shuffle-btn" id="previewBtn"><i class="ti ti-eye"></i> Preview</button>
+    </div>
+
+    <!-- Win message -->
+    <div class="puzzle-win" id="puzzleWin">
+      <div class="puzzle-win-content">
+        <h2>You did it! <i class="ti ti-heart-filled"></i></h2>
+        <p>Just like this puzzle, every piece of my life falls into place with you.</p>
+        <img src="assets/images/p.jpg" alt="Our photo" class="puzzle-win-img">
+        <button class="btn-cta puzzle-play-again" id="playAgainBtn">Play Again</button>
+      </div>
+    </div>
+
+    <!-- Image preview overlay -->
+    <div class="puzzle-preview" id="puzzlePreview">
+      <img src="assets/images/p.jpg" alt="Puzzle preview">
+      <p>Tap anywhere to close</p>
+    </div>
+
+  </section>
+
+  <script src="script.js"></script>
+
+  <!-- Puzzle Game Logic -->
+  <script>
+  (function() {
+    const IMG_SRC = 'assets/images/p.jpg';
+    let gridSize = 3;
+    let tiles = [];     // tiles[idx] = tileValue (or null for empty)
+    let tileEls = {};   // map tileValue -> DOM element
+    let moves = 0;
+    let solved = false;
+    let animating = false;
+
+    const board = document.getElementById('puzzleBoard');
+    const moveCounter = document.getElementById('moveCount');
+    const winOverlay = document.getElementById('puzzleWin');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const previewOverlay = document.getElementById('puzzlePreview');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const diffBtns = document.querySelectorAll('.puzzle-diff-btn');
+
+    const SLIDE_DURATION = 180; // ms
+
+    // Wait for image to load
+    const img = new Image();
+    img.src = IMG_SRC;
+    img.onload = () => initGame();
+    img.onerror = () => initGame();
+
+    /* ---------- Init ---------- */
+    function initGame() {
+      solved = false;
+      animating = false;
+      moves = 0;
+      moveCounter.textContent = '0';
+      winOverlay.classList.remove('show');
+
+      const totalTiles = gridSize * gridSize;
+      tiles = Array.from({ length: totalTiles }, (_, i) => i);
+      tiles[totalTiles - 1] = null;
+
+      shuffleTiles();
+      buildBoard();
+    }
+
+    /* ---------- Shuffle ---------- */
+    function shuffleTiles() {
+      let emptyIdx = tiles.indexOf(null);
+      const shuffleMoves = gridSize * gridSize * 40;
+
+      for (let i = 0; i < shuffleMoves; i++) {
+        const neighbors = getNeighbors(emptyIdx);
+        const pick = neighbors[Math.floor(Math.random() * neighbors.length)];
+        tiles[emptyIdx] = tiles[pick];
+        tiles[pick] = null;
+        emptyIdx = pick;
+      }
+
+      moves = 0;
+      moveCounter.textContent = '0';
+    }
+
+    function getNeighbors(idx) {
+      const row = Math.floor(idx / gridSize);
+      const col = idx % gridSize;
+      const n = [];
+      if (row > 0) n.push(idx - gridSize);
+      if (row < gridSize - 1) n.push(idx + gridSize);
+      if (col > 0) n.push(idx - 1);
+      if (col < gridSize - 1) n.push(idx + 1);
+      return n;
+    }
+
+    /* ---------- Build Board (full render) ---------- */
+    function buildBoard() {
+      board.innerHTML = '';
+      tileEls = {};
+
+      // Board uses relative positioning; tiles are absolute
+      board.style.gridTemplateColumns = '';
+      board.style.gridTemplateRows = '';
+
+      const gap = 3;
+
+      tiles.forEach((tileVal, idx) => {
+        if (tileVal === null) return; // skip empty
+
+        const div = document.createElement('div');
+        div.classList.add('puzzle-tile', 'puzzle-tile-abs');
+        div.dataset.value = tileVal;
+
+        // Background image slice
+        const origRow = Math.floor(tileVal / gridSize);
+        const origCol = tileVal % gridSize;
+        const bgX = gridSize === 1 ? 0 : (origCol / (gridSize - 1)) * 100;
+        const bgY = gridSize === 1 ? 0 : (origRow / (gridSize - 1)) * 100;
+
+        div.style.backgroundImage = `url('${IMG_SRC}')`;
+        div.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
+        div.style.backgroundPosition = `${bgX}% ${bgY}%`;
+
+        // Tile number
+        const num = document.createElement('span');
+        num.className = 'puzzle-tile-num';
+        num.textContent = tileVal + 1;
+        div.appendChild(num);
+
+        // Click handler
+        div.addEventListener('click', () => {
+          const currentIdx = tiles.indexOf(tileVal);
+          handleTileClick(currentIdx);
+        });
+
+        board.appendChild(div);
+        tileEls[tileVal] = div;
+      });
+
+      positionAllTiles(false);
+    }
+
+    /* ---------- Position tiles ---------- */
+    function positionAllTiles(animate) {
+      const gap = 3;
+      const boardW = board.clientWidth;
+      const tileSize = (boardW - gap * (gridSize - 1)) / gridSize;
+
+      tiles.forEach((tileVal, idx) => {
+        if (tileVal === null) return;
+        const el = tileEls[tileVal];
+        if (!el) return;
+
+        const row = Math.floor(idx / gridSize);
+        const col = idx % gridSize;
+        const x = col * (tileSize + gap);
+        const y = row * (tileSize + gap);
+
+        el.style.width = tileSize + 'px';
+        el.style.height = tileSize + 'px';
+        el.style.transition = animate ? `transform ${SLIDE_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)` : 'none';
+        el.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    }
+
+    /* ---------- Slide a tile ---------- */
+    function slideTile(tileIdx) {
+      if (solved || animating) return;
+      const emptyIdx = tiles.indexOf(null);
+      const neighbors = getNeighbors(emptyIdx);
+
+      if (!neighbors.includes(tileIdx)) return;
+
+      animating = true;
+      const tileVal = tiles[tileIdx];
+
+      // Swap in data
+      tiles[emptyIdx] = tileVal;
+      tiles[tileIdx] = null;
+      moves++;
+      moveCounter.textContent = moves;
+
+      // Animate only the moved tile
+      positionAllTiles(true);
+
+      setTimeout(() => {
+        animating = false;
+        checkWin();
+      }, SLIDE_DURATION);
+    }
+
+    /* ---------- Move ---------- */
+    function handleTileClick(idx) {
+      slideTile(idx);
+    }
+
+    /* ---------- Win Check ---------- */
+    function checkWin() {
+      const total = gridSize * gridSize;
+      for (let i = 0; i < total - 1; i++) {
+        if (tiles[i] !== i) return;
+      }
+      if (tiles[total - 1] !== null) return;
+
+      solved = true;
+      setTimeout(() => {
+        winOverlay.classList.add('show');
+      }, 300);
+    }
+
+    /* ---------- Controls ---------- */
+    shuffleBtn.addEventListener('click', () => {
+      solved = false;
+      animating = false;
+      winOverlay.classList.remove('show');
+      shuffleTiles();
+      buildBoard();
+    });
+
+    playAgainBtn.addEventListener('click', () => {
+      winOverlay.classList.remove('show');
+      solved = false;
+      animating = false;
+      shuffleTiles();
+      buildBoard();
+    });
+
+    previewBtn.addEventListener('click', () => {
+      previewOverlay.classList.toggle('show');
+    });
+    previewOverlay.addEventListener('click', () => {
+      previewOverlay.classList.remove('show');
+    });
+
+    diffBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        diffBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        gridSize = parseInt(btn.dataset.size);
+        initGame();
+      });
+    });
+
+    // Reposition on resize
+    window.addEventListener('resize', () => positionAllTiles(false));
+
+    /* ---------- Touch / Swipe Support ---------- */
+    let touchStartX = 0, touchStartY = 0;
+
+    board.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    board.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+
+      // Tap — find which tile was tapped
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+
+      e.preventDefault();
+
+      // Swipe direction
+      const emptyIdx = tiles.indexOf(null);
+      const emptyRow = Math.floor(emptyIdx / gridSize);
+      const emptyCol = emptyIdx % gridSize;
+      let targetIdx = null;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 0) {
+          if (emptyCol > 0) targetIdx = emptyIdx - 1;
+        } else {
+          if (emptyCol < gridSize - 1) targetIdx = emptyIdx + 1;
+        }
+      } else {
+        if (dy > 0) {
+          if (emptyRow > 0) targetIdx = emptyIdx - gridSize;
+        } else {
+          if (emptyRow < gridSize - 1) targetIdx = emptyIdx + gridSize;
+        }
+      }
+
+      if (targetIdx !== null && tiles[targetIdx] !== null) {
+        slideTile(targetIdx);
+      }
+    });
+
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Written in the Stars ❤️ Valentine's Day</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+
+  <!-- Page Transition Overlay -->
+  <div class="page-transition active"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="dashboard.html" class="nav-logo" style="color: #f4c2c2;">Our Love <span class="heart-icon"><i class="ti ti-heart-filled"></i></span></a>
+    <button class="hamburger" aria-label="Menu">
+      <span style="background: #f4c2c2;"></span>
+      <span style="background: #f4c2c2;"></span>
+      <span style="background: #f4c2c2;"></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="dashboard.html" style="color: rgba(255,255,255,0.8);">Home</a></li>
+      <li><a href="video.html" style="color: rgba(255,255,255,0.8);">Our Video</a></li>
+      <li><a href="photos.html" style="color: rgba(255,255,255,0.8);">Memories</a></li>
+      <li><a href="particles.html" class="active" style="color: #fff;">Stars</a></li>
+      <li><a href="letter.html" style="color: rgba(255,255,255,0.8);">Love Letter</a></li>
+      <li><a href="puzzle.html" style="color: rgba(255,255,255,0.8);">Pixel Game</a></li>
+      <li><a href="particle-image.html" style="color: rgba(255,255,255,0.8);">Particle Art</a></li>
+    </ul>
+  </nav>
+
+  <!-- Full-Screen Particles Section -->
+  <section class="particles-section">
+
+    <!-- Particle Canvas Overlay -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Centered Quote -->
+    <div class="particles-content">
+      <blockquote>
+        "In all the world, there is no heart for me like yours.
+        In all the world, there is no love for you like mine."
+      </blockquote>
+      <div class="particles-divider"></div>
+      <p class="quote-author">— Maya Angelou</p>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
